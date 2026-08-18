@@ -390,6 +390,21 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
     rgba(255,255,255,.045) 84%,
     rgba(255,255,255,.02) 100%);
 }
+/* Затемнение снизу вверх. Фигура лежит фоном во весь экран, и без
+   этого слоя текст шёл бы прямо по пиджаку. Сверху кадр почти чистый —
+   там голова и плечи; книзу уходит в сплошной графит, по нему и текст.
+   На десктопе не нужно: текст и фигура там не пересекаются. */
+.hero__scrim{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(180deg,
+    rgb(var(--night-rgb) / .30) 0%,
+    rgb(var(--night-rgb) / .12) 26%,
+    rgb(var(--night-rgb) / .55) 46%,
+    rgb(var(--night-rgb) / .90) 64%,
+    var(--night) 80%);
+}
+@media (min-width:1024px){ .hero__scrim{ display:none; } }
+
 /* Плёночное зерно: убирает пластиковую плоскость тёмной заливки */
 .hero__grain{
   position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.05;
@@ -401,10 +416,14 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
   display:flex; flex-direction:column; justify-content:center;
   /* Шапку обходит фото, стоящее выше, — тексту большой отступ сверху
      не нужен. На десктопе фото абсолютное, и отступ возвращается. */
-  padding-top:clamp(1.5rem, 5vw, 2.25rem);
-  padding-bottom:clamp(1rem, 3vw, 2rem);
+  justify-content:flex-end;      /* текст ложится на нижнюю часть кадра */
+  padding-top:clamp(58px, 4.6vw, 72px);
+  padding-bottom:calc(52px + clamp(1.25rem, 4vw, 2rem));  /* над нижней панелью */
 }
 .hero__col{ display:flex; flex-direction:column; }
+/* Единственный элемент в потоке — тянем его на всю высоту экрана,
+   иначе прижимать текст к низу было бы не от чего. */
+.hero__inner{ flex:1 1 auto; }
 
 /* Заголовок — единственный H1. Внутри три оптические строки. */
 .hero__title{
@@ -461,12 +480,15 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
    сверху они отжимали призыв к действию за нижний край экрана.
    Фокусируемых элементов внутри нет, поэтому порядок обхода
    с клавиатуры не нарушается. */
-@media (max-width:639px){
-  .hero__cta{ order:1; }
-  .hero__meta{ order:2; }
+/* На телефоне реквизиты скрыты: четыре строки моно съедали место,
+   которое нужно самой фигуре. Отдельным правилом, а не внутри
+   основного — там ниже стоит display:grid и перебивает. */
+@media (max-width:1023px){
+  .hero__meta{ display:none; }
 }
-@media (min-width:640px){
+@media (min-width:1024px){
   .hero__meta{
+    display:grid;
     grid-template-columns:max-content max-content;
     column-gap:var(--meta-gap);
   }
@@ -500,18 +522,11 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
    Размер задан высотой, ширина считается из соотношения силуэта
    (480/1161): при вписывании по ширине он получался бы с ладонь. */
 .hero__media{
-  position:relative;
-  order:-1;                     /* фото поднимается над текстом */
-  width:100%; margin:0;
-  margin-top:clamp(58px, 4.6vw, 72px);   /* начинается под шапкой */
-  height:44svh; min-height:290px; max-height:430px;
-  overflow:hidden;
-}
-/* Низ кадра растворяется в фоне — портрет переходит в текст
-   без видимой границы, а не лежит отрезанной плашкой. */
-.hero__media::after{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(180deg, transparent 52%, var(--night) 97%);
+  position:absolute; z-index:0;
+  top:clamp(58px, 4.6vw, 72px);  /* под шапкой */
+  left:0; right:0; bottom:0;
+  width:auto; height:auto; margin:0;
+  overflow:visible;
 }
 /* <picture> — инлайновая обёртка, через неё не наследуется процентная
    высота, и картинка вылезала за пределы экрана. Делаем её блоком.
@@ -529,7 +544,7 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 .hero__img{
   width:100%; height:100%;
   object-fit:contain;          /* по ширине не кадрируем — срежет плечи */
-  object-position:50% 0;       /* держим голову, режем низ */
+  object-position:50% 100%;    /* стоит на нижней границе экрана */
 }
 /* Никакого свечения за спиной: круглое светлое пятно позади тёмного
    костюма читалось как грязный ореол. Отделение фигуры от фона даёт
@@ -576,6 +591,7 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
     position:absolute; right:0; left:auto;
     top:calc(clamp(58px, 4.6vw, 72px) + 2rem);
     bottom:-30%;
+    z-index:0;
     width:var(--media-w); max-width:900px;
     height:auto; min-height:0; max-height:none;
     margin:0; overflow:visible;
@@ -615,10 +631,10 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 </style>
 
 <!-- Остальные стили не блокируют первую отрисовку -->
-<link rel="preload" href="css/styles.css?v=2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="css/styles.css?v=2"></noscript>
+<link rel="preload" href="css/styles.css?v=4" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="css/styles.css?v=4"></noscript>
 
-<script src="js/script.js?v=2" defer></script>
+<script src="js/script.js?v=4" defer></script>
 
 <!-- ══ Schema.org ══ -->
 <script type="application/ld+json">
@@ -726,6 +742,7 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
   <div class="hero__bg" aria-hidden="true"></div>
   <div class="hero__light" aria-hidden="true"></div>
   <div class="hero__grain" aria-hidden="true"></div>
+  <div class="hero__scrim" aria-hidden="true"></div>
 
   <div class="shell hero__inner">
     <div class="hero__col">
