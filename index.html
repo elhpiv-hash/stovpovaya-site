@@ -63,6 +63,52 @@
 <script>
 document.documentElement.className = 'js';
 setTimeout(function(){ document.documentElement.classList.add('is-ready'); }, 2500);
+
+/* Страховка появления.
+
+   Секции выезжают через IntersectionObserver, и все 39 блоков стоят
+   с opacity:0 до его срабатывания. Если он молчит — ошибка в скрипте,
+   режим экономии трафика, восстановление страницы из кэша Safari —
+   человек видит пустую страницу. Это была реальная поломка: сайт
+   открывался пустым.
+
+   Проверка идёт по факту, а не по наличию наблюдателя: работает
+   всегда и просто показывает всё, что уже попало на экран, но до сих
+   пор скрыто. Обычно наблюдатель успевает первым и делать здесь
+   нечего; когда все блоки показаны, слушатель снимает сам себя. */
+(function () {
+  var pending = true;
+
+  function sweep() {
+    var n = document.querySelectorAll('[data-rv]:not(.is-in)');
+    for (var i = 0; i < n.length; i++) {
+      if (n[i].getBoundingClientRect().top < window.innerHeight * 0.92) {
+        n[i].classList.add('is-in');
+      }
+    }
+    if (!document.querySelectorAll('[data-rv]:not(.is-in)').length) {
+      window.removeEventListener('scroll', onScroll);
+      pending = false;
+    }
+  }
+
+  // Троттлинг по времени, а не через requestAnimationFrame: rAF не
+  // вызывается в фоновой вкладке и в части режимов экономии — то есть
+  // ровно там, где страховка и нужна.
+  var last = 0;
+  function onScroll() {
+    if (!pending) return;
+    var now = Date.now();
+    if (now - last < 120) return;
+    last = now;
+    sweep();
+  }
+
+  setTimeout(function () {
+    sweep();
+    if (pending) window.addEventListener('scroll', onScroll, { passive: true });
+  }, 2500);
+})();
 </script>
 
 <style>
@@ -337,7 +383,7 @@ body{
    кнопка оказывается ровно под ней и не нажимается. */
 .dock{
   position:fixed; inset-inline:0; bottom:0; z-index:60;
-  display:grid; grid-template-columns:repeat(3, 1fr);
+  display:grid; grid-template-columns:repeat(2, 1fr);
   background:rgba(21,21,23,.94);
   -webkit-backdrop-filter:blur(14px);
   backdrop-filter:blur(14px);
@@ -631,10 +677,10 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 </style>
 
 <!-- Остальные стили не блокируют первую отрисовку -->
-<link rel="preload" href="css/styles.css?v=6" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="css/styles.css?v=6"></noscript>
+<link rel="preload" href="css/styles.css?v=10" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="css/styles.css?v=10"></noscript>
 
-<script src="js/script.js?v=6" defer></script>
+<script src="js/script.js?v=10" defer></script>
 
 <!-- ══ Schema.org ══ -->
 <script type="application/ld+json">
@@ -773,9 +819,10 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
              при наведении, и без обёртки он оказался бы перекрыт. -->
         <a class="btn btn--primary" href="https://wa.me/79111558595"
            target="_blank" rel="noopener"><span>Написать в WhatsApp</span></a>
-        <!-- ЗАМЕНИТЬ при наличии @username: https://t.me/username -->
-        <a class="btn btn--ghost" href="https://t.me/+79111558595"
-           target="_blank" rel="noopener"><span>Telegram</span></a>
+        <!-- Telegram временно убран. Вернуть — снять комментарий
+             и подставить @username вместо номера.
+        <a class="btn btn--ghost" href="https://t.me/username"
+           target="_blank" rel="noopener"><span>Telegram</span></a> -->
       </div>
     </div>
   </div>
@@ -1029,7 +1076,8 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 
     <div class="contacts__cta" data-rv>
       <a class="btn btn--primary" href="https://wa.me/79111558595" target="_blank" rel="noopener"><span>Написать в WhatsApp</span></a>
-      <a class="btn btn--ghost-ink" href="https://t.me/+79111558595" target="_blank" rel="noopener"><span>Telegram</span></a>
+      <!-- Telegram временно убран
+      <a class="btn btn--ghost-ink" href="https://t.me/username" target="_blank" rel="noopener"><span>Telegram</span></a> -->
     </div>
 
     <dl class="contacts__list">
@@ -1086,7 +1134,7 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
 <div class="dock" aria-label="Быстрая связь">
   <a class="dock__a dock__a--main" href="tel:+79111558595">Позвонить</a>
   <a class="dock__a" href="https://wa.me/79111558595" target="_blank" rel="noopener">WhatsApp</a>
-  <a class="dock__a" href="https://t.me/+79111558595" target="_blank" rel="noopener">Telegram</a>
+  <!-- Telegram временно убран; панель стала на две кнопки -->
 </div>
 
 </body>
