@@ -1,0 +1,62 @@
+# ══════════════════════════════════════════════════════════════════
+# Настройки для обычного хостинга на Apache.
+# Если хостинг на nginx — файл не нужен, попросите поддержку включить
+# gzip и кэширование статики, эффект тот же.
+# ══════════════════════════════════════════════════════════════════
+
+# ── Сжатие ────────────────────────────────────────────────────────
+# HTML/CSS/JS ужимаются примерно втрое. Картинки не трогаем:
+# WebP и PNG уже сжаты, повторное сжатие только тратит процессор.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ── Кэширование ───────────────────────────────────────────────────
+# Картинки и шрифты — на год: они не меняются, а при замене файла
+# меняется и имя. HTML не кэшируем, иначе правки не доедут до людей.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp              "access plus 1 year"
+  ExpiresByType image/png               "access plus 1 year"
+  ExpiresByType image/jpeg              "access plus 1 year"
+  ExpiresByType image/svg+xml           "access plus 1 year"
+  ExpiresByType text/css                "access plus 1 month"
+  ExpiresByType application/javascript  "access plus 1 month"
+  ExpiresByType text/html               "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(webp|png|jpe?g|svg|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  # Базовая защита заголовками
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ── Адреса ────────────────────────────────────────────────────────
+# Единственный канонический адрес: https и без www.
+# Иначе поисковики видят до четырёх копий одного сайта.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*)$ https://stovpovaya.ru/$1 [R=301,L]
+
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+</IfModule>
+
+# ── Типы файлов ───────────────────────────────────────────────────
+# Некоторые хостинги не знают WebP и отдают его как поток байтов.
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+</IfModule>
+
+ErrorDocument 404 /index.html

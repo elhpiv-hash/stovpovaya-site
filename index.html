@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="ru" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  СТРУКТУРА                                                            ║
+  ║    index.html · css/styles.css · js/script.js · img/                  ║
+  ║                                                                       ║
+  ║  ЧТО ЗАМЕНИТЬ ПЕРЕД ПУБЛИКАЦИЕЙ (ищите по слову ЗАМЕНИТЬ)             ║
+  ║  1. img/og-cover.jpg — картинка для мессенджеров, 1200×630            ║
+  ║  2. E-mail — сейчас плейсхолдер в двух местах (контакты + JSON-LD)    ║
+  ║  3. Адрес приёма — если появится офис                                 ║
+  ║  4. Telegram — сейчас ссылка по номеру, замените на @username         ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+
+<!-- Safari сам делает номер реестра «47/2089» кликабельным телефоном. Отключаем. -->
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#151517">
+
+<!-- ══ SEO ══ -->
+<title>Адвокат в Санкт-Петербурге — Стовповая Анастасия Олеговна</title>
+<meta name="description" content="Адвокат Стовповая Анастасия Олеговна, Санкт-Петербург. 17 лет в праве, 10 из них — в органах прокуратуры. Защита на следствии и в суде: уголовные, гражданские, семейные и жилищные дела. Реестр адвокатов Ленинградской области, № 47/2089.">
+<link rel="canonical" href="https://stovpovaya.ru/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:url" content="https://stovpovaya.ru/">
+<meta property="og:site_name" content="Адвокат Стовповая А. О.">
+<meta property="og:title" content="Адвокат в Санкт-Петербурге — Стовповая Анастасия Олеговна">
+<meta property="og:description" content="17 лет в праве, 10 из них — в прокуратуре. Защита на всех стадиях: уголовные, гражданские, семейные и жилищные дела.">
+<!-- ЗАМЕНИТЬ: положите картинку 1200×630 и оставьте абсолютный URL — мессенджеры не понимают относительный путь -->
+<meta property="og:image" content="https://stovpovaya.ru/img/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Адвокат Стовповая Анастасия Олеговна, Санкт-Петербург">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Фавикон встроен в документ: минус один запрос и никаких 404 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23151517'/%3E%3Cpath d='M9 23 16 9l7 14' stroke='%23F2F0EC' stroke-width='2.4' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<!-- ══ ШРИФТЫ ══
+     Golos Text — строгий гротеск Paratype с настоящей кириллицей (не Inter).
+     JetBrains Mono — только для микротипографики: индексы, метки, реестр.
+     display=swap, чтобы текст не ждал загрузки. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Портрет — LCP-элемент. Preload запускает его загрузку сразу,
+     не дожидаясь разбора разметки. type обязателен: без него браузер
+     скачал бы и WebP, и PNG. -->
+<link rel="preload" as="image" href="img/portrait.webp" type="image/webp" fetchpriority="high">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<!-- Ставим класс js до первой отрисовки: без него анимации выключены
+     и контент виден сразу (страница работает и с отключённым JS).
+     Второй таймер — страховка: если script.js не загрузится или упадёт,
+     первый экран всё равно проявится, а не останется пустым. -->
+<script>
+document.documentElement.className = 'js';
+setTimeout(function(){ document.documentElement.classList.add('is-ready'); }, 2500);
+</script>
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   КРИТИЧЕСКИЙ CSS — всё, что видно до первого скролла.
+   Секции ниже первого экрана живут в styles.css (грузится асинхронно).
+   Дублирования между файлами нет: здесь токены, шапка, hero, кнопки.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Токены ─────────────────────────────────────────────────────────── */
+:root{
+  /* Палитра монохромная: тёплый off-white против графита.
+     Цветного акцента нет вообще — акцент делается контрастом
+     (светлая кнопка на тёмном, тёмная на светлом). Так дороже. */
+  --paper:      #F3F1ED;
+  --paper-hi:   #FAF8F5;
+  --ink:        #1A1A1C;
+  --ink-70:     rgba(26,26,28,.70);
+  --ink-52:     rgba(26,26,28,.54);
+  --hair:       rgba(26,26,28,.16);
+  --hair-soft:  rgba(26,26,28,.09);
+
+  /* Тёмный первый экран: серо-чёрный графит */
+  --night:      #151517;
+  --night-rgb:  21 21 23;       /* тот же цвет для прозрачных слоёв */
+  --night-lo:   #0E0E10;
+  --on-night:      #F2F0EC;
+  --on-night-70:   rgba(242,240,236,.74);
+  --on-night-55:   rgba(242,240,236,.58);
+  --hair-night:    rgba(242,240,236,.16);
+
+  --ease:   cubic-bezier(.16, 1, .3, 1);
+  --ease-io: cubic-bezier(.62, .05, .36, 1);
+
+  /* Общий масштаб. Всё крупное набрано через clamp с этими потолками —
+     если понадобится сделать сайт мельче или крупнее целиком, правятся
+     максимумы здесь и в css/styles.css, а не каждый блок по отдельности. */
+  --shell-pad: clamp(20px, 4.4vw, 72px);
+  --media-w: 46vw;              /* ширина фотоплана на десктопе */
+
+  --font: 'Golos Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+}
+
+/* ── Сброс ──────────────────────────────────────────────────────────── */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body,h1,h2,h3,p,figure,ol,ul{ margin:0; }
+ol,ul{ padding:0; list-style:none; }
+img{ display:block; max-width:100%; height:auto; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; }
+
+html{ scroll-behavior:smooth; }
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:clamp(.9375rem, .9rem + .15vw, 1rem);
+  line-height:1.6;
+  font-weight:400;
+  letter-spacing:-.005em;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+::selection{ background:var(--ink); color:var(--paper); }
+
+/* Кольцо фокуса всегда инвертировано относительно фона:
+   тёмное на светлых секциях, светлое на тёмном первом экране. */
+:focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:3px;
+  border-radius:2px;
+}
+.hero :focus-visible{ outline-color:var(--on-night); }
+
+.skip{
+  position:absolute; left:var(--shell-pad); top:-100px; z-index:100;
+  background:var(--ink); color:var(--paper); padding:.7em 1.2em;
+  font-weight:600; border-radius:2px; transition:top .2s;
+}
+.skip:focus{ top:16px; }
+
+/* ── Сетка ──────────────────────────────────────────────────────────── */
+.shell{
+  width:100%;
+  max-width:1400px;
+  margin-inline:auto;
+  padding-inline:var(--shell-pad);
+}
+
+/* ── Микротипографика: метки, индексы ───────────────────────────────── */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.625rem;
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  display:flex; align-items:center; gap:.85em;
+}
+.eyebrow__tick{
+  display:block; width:34px; height:1px; flex:none;
+  background:currentColor; opacity:.45;
+}
+
+/* ── Кнопки ─────────────────────────────────────────────────────────
+   Основная кнопка инвертирует фон секции: на тёмном экране светлая,
+   на светлом — графитовая. Пара --btn-bg/--btn-fg переопределяется
+   контекстом, поэтому одного класса хватает на обе ситуации.        */
+.btn{
+  --bh: 3rem;
+  position:relative; overflow:hidden;
+  display:inline-flex; align-items:center; justify-content:center;
+  height:var(--bh); padding-inline:1.4rem;
+  font-size:.875rem; font-weight:600; letter-spacing:-.005em;
+  border-radius:3px;
+  border:1px solid transparent;
+  transition:border-color .4s var(--ease), color .4s var(--ease),
+             transform .4s var(--ease);
+}
+.btn > span{ position:relative; z-index:1; }
+/* Заливка наезжает снизу вверх, а не просто меняет цвет скачком */
+.btn::before{
+  content:''; position:absolute; inset:0; z-index:0;
+  transform:translateY(101%);
+  transition:transform .5s var(--ease);
+}
+.btn:hover::before{ transform:translateY(0); }
+.btn:hover{ transform:translateY(-2px); }
+.btn:active{ transform:translateY(0); transition-duration:.1s; }
+
+.btn--primary{
+  background:var(--btn-bg, var(--ink));
+  color:var(--btn-fg, var(--paper));
+}
+.btn--primary::before{ background:var(--btn-sweep, #000); }
+.btn--primary:hover{ color:var(--btn-fg, var(--paper)); }
+
+/* На тёмном экране пара переворачивается */
+.hero{ --btn-bg:var(--on-night); --btn-fg:var(--night); --btn-sweep:#FFFFFF; }
+
+.btn--ghost{
+  border-color:var(--hair-night);
+  color:var(--on-night);
+  font-weight:500;
+}
+.btn--ghost::before{ background:rgba(242,240,236,.09); }
+.btn--ghost:hover{ border-color:rgba(242,240,236,.45); }
+
+/* На светлых секциях у ghost-кнопки другая обводка */
+.btn--ghost-ink{
+  border-color:var(--hair);
+  color:var(--ink);
+  font-weight:500;
+}
+.btn--ghost-ink::before{ background:rgba(26,26,28,.06); }
+.btn--ghost-ink:hover{ border-color:var(--ink); }
+
+/* ── Шапка ──────────────────────────────────────────────────────────── */
+.site-head{
+  position:fixed; inset-inline:0; top:0; z-index:50;
+  color:var(--on-night);
+  transition:background-color .4s var(--ease-io), color .4s var(--ease-io),
+             box-shadow .4s var(--ease-io), backdrop-filter .4s,
+             transform .5s var(--ease);
+}
+/* Уезжает вверх при прокрутке вниз и возвращается при движении вверх —
+   контент не спорит с закреплённой полосой. Класс ставит script.js. */
+.site-head.is-hidden{ transform:translateY(-102%); }
+.site-head__in{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  height:clamp(58px, 4.6vw, 72px);
+}
+@media (min-width:768px){ .site-head__in{ gap:2rem; } }
+/* После первого экрана шапка становится светлой — иначе тёмная полоса
+   висела бы над светлым контентом. Класс ставит IntersectionObserver. */
+.site-head.is-light{
+  background:rgba(243,241,237,.88);
+  -webkit-backdrop-filter:saturate(1.5) blur(14px);
+  backdrop-filter:saturate(1.5) blur(14px);
+  color:var(--ink);
+  box-shadow:0 1px 0 var(--hair-soft);
+}
+.site-head.is-light .brand__role,
+.site-head.is-light .nav a{ color:var(--ink-70); }
+.site-head.is-light .head-cta{ border-color:var(--hair); }
+
+/* Подпись в две строки, как в фирменных блоках: имя и под ним статус
+   мелким моношрифтом. Заодно узкий экран перестаёт выталкивать телефон. */
+.brand{ display:flex; flex-direction:column; gap:.25rem; line-height:1.1; }
+.brand__name{ font-weight:600; letter-spacing:-.02em; font-size:.9375rem; white-space:nowrap; }
+.brand__role{
+  font-family:var(--mono); font-size:.5625rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--on-night-55); transition:color .4s;
+  white-space:nowrap;
+}
+
+.nav{ display:none; }
+@media (min-width:1024px){
+  .nav{ display:flex; gap:2.25rem; }
+  .nav a{
+    position:relative; font-size:.8125rem; color:var(--on-night-70);
+    transition:color .28s var(--ease); padding-block:.35rem;
+  }
+  .nav a::after{
+    content:''; position:absolute; left:0; bottom:0; width:100%; height:1px;
+    background:currentColor; transform:scaleX(0); transform-origin:left;
+    transition:transform .42s var(--ease);
+  }
+  .nav a:hover{ color:var(--on-night); }
+  .site-head.is-light .nav a:hover{ color:var(--ink); }
+  .nav a:hover::after{ transform:scaleX(1); }
+}
+
+.head-cta{
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.04em;
+  border:1px solid var(--hair-night); border-radius:2px;
+  padding:.55rem .9rem; white-space:nowrap;
+  transition:border-color .3s var(--ease), background-color .3s var(--ease);
+}
+.head-cta:hover{ border-color:currentColor; }
+
+/* ══ HERO ═══════════════════════════════════════════════════════════ */
+.hero{
+  position:relative;
+  min-height:100svh;
+  background:var(--night);
+  color:var(--on-night);
+  isolation:isolate;
+  overflow:hidden;
+}
+/* Едва заметный вертикальный сдвиг тона — глубина без «градиента как у всех» */
+.hero__bg{
+  position:absolute; inset:0; z-index:-2;
+  background:linear-gradient(178deg, #1B1B1E 0%, var(--night) 48%, var(--night-lo) 100%);
+}
+/* Рассеянный свет с правой стороны — как из окна за кадром.
+   Диагональная растяжка во весь экран: у неё нет края, поэтому
+   она отделяет фигуру от фона, но сама глазом не считывается.
+   Если хочется совсем плоский фон — удалить .hero__light целиком. */
+.hero__light{
+  position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(103deg,
+    transparent 42%,
+    rgba(255,255,255,.028) 68%,
+    rgba(255,255,255,.045) 84%,
+    rgba(255,255,255,.02) 100%);
+}
+/* Плёночное зерно: убирает пластиковую плоскость тёмной заливки */
+.hero__grain{
+  position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero__inner{
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-top:calc(clamp(64px,5.4vw,84px) + clamp(2rem,5vw,4.5rem));
+  padding-bottom:clamp(1rem, 3vw, 2rem);
+}
+.hero__col{ display:flex; flex-direction:column; }
+
+/* Заголовок — единственный H1. Внутри три оптические строки. */
+.hero__title{
+  margin-top:clamp(1.5rem, 3.4vw, 2.75rem);
+  font-weight:700;
+  font-size:clamp(2.375rem, 9vw, 4rem);
+  line-height:.99;
+  letter-spacing:-.038em;
+  text-wrap:balance;
+}
+.hero__title .line{ display:block; overflow:hidden; padding-bottom:.04em; }
+.hero__title .line > span{ display:block; }
+
+/* Вторая ступень заголовка: та же семантика, другой типографический вес */
+.hero__title-sub{
+  margin-top:clamp(.9rem, 2vw, 1.35rem);
+  font-size:clamp(1rem, 3vw, 1.1875rem);
+  font-weight:500;
+  line-height:1.3;
+  letter-spacing:-.018em;
+  color:var(--on-night-70);
+  max-width:22ch;
+}
+
+.hero__lede{
+  margin-top:clamp(1.25rem, 2.6vw, 1.75rem);
+  max-width:44ch;
+  color:var(--on-night-70);
+  font-size:clamp(.9375rem, 2.6vw, 1rem);
+  line-height:1.64;
+}
+
+/* Реквизиты над кнопками. Сетка фиксированная, а не flex-wrap:
+   при переносе разделительная линия повисала в начале строки
+   отдельным штрихом. В сетке колонка каждого пункта известна заранее. */
+.hero__meta{
+  --meta-gap: clamp(1.35rem, 2.6vw, 2.25rem);
+  margin-top:clamp(2rem, 4.5vw, 2.75rem);
+  padding-top:clamp(1.5rem, 3vw, 2rem);
+  border-top:1px solid var(--hair-night);
+  display:grid; gap:.7rem 0;
+  justify-content:start;
+  font-family:var(--mono);
+  font-size:.625rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  line-height:1.5;
+  color:var(--on-night-55);
+  /* Не даём строке уйти вправо, где кадр уже проступает из темноты —
+     мелкий текст там потерял бы контраст. */
+  max-width:44rem;
+}
+/* На узком экране реквизиты уходят под кнопки: четырьмя строками
+   сверху они отжимали призыв к действию за нижний край экрана.
+   Фокусируемых элементов внутри нет, поэтому порядок обхода
+   с клавиатуры не нарушается. */
+@media (max-width:639px){
+  .hero__cta{ order:1; }
+  .hero__meta{ order:2; }
+}
+@media (min-width:640px){
+  .hero__meta{
+    grid-template-columns:max-content max-content;
+    column-gap:var(--meta-gap);
+  }
+  .hero__meta li:nth-child(even){
+    padding-left:var(--meta-gap);
+    border-left:1px solid var(--hair-night);
+  }
+}
+
+.hero__cta{
+  margin-top:clamp(2rem, 4vw, 2.75rem);
+  display:flex; flex-wrap:wrap; gap:.75rem;
+}
+
+/* ── Фигура ─────────────────────────────────────────────────────────
+   Фон у портрета вырезан, поэтому это не «фотоплан», а силуэт на
+   графите. Затемняющих градиентов поверх нет — они бы просто
+   испачкали человека. Вместо них за фигурой мягкое световое пятно:
+   именно оно не даёт вырезке выглядеть наклеенной.
+   Мобильный порядок: фигура под текстом, прижата к низу экрана.     */
+.hero__media{
+  position:relative;
+  width:100%;
+  margin-top:clamp(1.5rem, 5vw, 2.5rem);
+  height:clamp(400px, 62vw, 480px);
+  overflow:hidden;
+}
+/* <picture> — инлайновая обёртка, через неё не наследуется процентная
+   высота, и картинка вылезала за пределы экрана. Делаем её блоком.
+   Высота больше 100%: силуэт узкий (соотношение 0.41), и вписанный
+   целиком он получался бы шириной с ладонь. Поэтому фигура крупная,
+   а низ уходит под нижнюю границу экрана — обычный редакторский кроп. */
+/* --py задаёт script.js на скролле: фигура отстаёт от страницы,
+   и первый экран получает глубину. Трансформ живёт на picture,
+   потому что на самой .hero__media висит анимация появления. */
+.hero__media picture{
+  display:block; width:100%; height:165%;
+  transform:translate3d(0, var(--py, 0px), 0);
+  will-change:transform;
+}
+.hero__img{
+  width:100%; height:100%;
+  object-fit:contain;          /* по ширине не кадрируем — срежет плечи */
+  object-position:50% 0;       /* держим голову, режем низ */
+}
+/* Никакого свечения за спиной: круглое светлое пятно позади тёмного
+   костюма читалось как грязный ореол. Отделение фигуры от фона даёт
+   рассеянный боковой свет — он лежит на всём экране (.hero__light),
+   без видимых границ пятна. */
+/* Если файла нет — вместо «битой картинки» показываем осмысленный слот */
+.hero__ph{
+  position:absolute; inset:0; display:none;
+  align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:.6875rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--on-night-55);
+  background:
+    repeating-linear-gradient(-45deg, rgba(242,240,236,.03) 0 10px, transparent 10px 20px),
+    #232326;
+}
+.hero__media.is-empty .hero__img{ display:none; }
+.hero__media.is-empty .hero__ph{ display:flex; }
+
+/* ── Планшет / десктоп: типографика слева, фото справа в упор к краю ── */
+@media (min-width:1024px){
+  /* Текстовая колонка отступает не на всю ширину фотоплана, а меньше:
+     она заходит под растворённый край кадра. Так текст и фото — одна
+     сцена, а не две приставленные друг к другу колонки. */
+  .hero__inner{
+    min-height:100svh;
+    padding-right:30vw;
+    padding-bottom:clamp(1.5rem, 2.6vw, 2.75rem);
+  }
+  /* Кегль привязан к ширине окна, а не зафиксирован на максимуме:
+     иначе в диапазоне 1024–1300 строка «на всех стадиях.» упиралась
+     в колонку и ломалась пополам. 16ch — минимум, при котором она
+     держится в одну строку на любой ширине. */
+  .hero__title{ font-size:clamp(2.5rem, 4.4vw, 4rem); max-width:16ch; }
+  .hero__lede{ font-size:1rem; }
+
+  /* Фигура прижата к правому краю. Верх отбит ниже шапки, чтобы
+     голова не оказалась за телефоном в правом углу; низ намеренно
+     уходит за границу экрана — так силуэт крупнее и стоит на земле. */
+  /* Размер фигуры задают эти два числа: верх отбит ниже шапки,
+     низ уведён за край экрана. Чем больше отрицательный bottom,
+     тем крупнее силуэт и тем выше срез по ногам. */
+  .hero__media{
+    position:absolute; right:0; left:auto;
+    top:calc(clamp(58px, 4.6vw, 72px) + 2rem);
+    bottom:-30%;
+    width:var(--media-w); max-width:900px;
+    margin:0; height:auto;
+  }
+  .hero__media picture{ height:100%; }
+  .hero__img{ object-position:100% 0; }
+}
+
+/* ══ АНИМАЦИЯ ПОЯВЛЕНИЯ ═════════════════════════════════════════════
+   Один раз при загрузке, без пролётов. Строки заголовка выезжают
+   из-под маски, остальное — короткий сдвиг с прозрачностью.
+   Стартовое состояние применяется только при активном JS.           */
+.js .hero__title .line > span,
+.js .hero__fade{
+  transition:transform 1.05s var(--ease) var(--d, 0ms),
+             opacity .85s var(--ease) var(--d, 0ms);
+}
+.js .hero__title .line > span{ transform:translateY(112%); }
+.js .hero__fade{ opacity:0; transform:translateY(12px); }
+.js .hero__media{
+  opacity:0; transform:scale(1.04);
+  transition:opacity 1.4s var(--ease) .1s, transform 1.8s var(--ease) .1s;
+}
+
+.is-ready .hero__title .line > span{ transform:none; }
+.is-ready .hero__fade{ opacity:1; transform:none; }
+.is-ready .hero__media{ opacity:1; transform:none; }
+
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  .js .hero__title .line > span,
+  .js .hero__fade,
+  .js .hero__media{ opacity:1; transform:none; transition:none; }
+  *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}
+</style>
+
+<!-- Остальные стили не блокируют первую отрисовку -->
+<link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="css/styles.css"></noscript>
+
+<script src="js/script.js" defer></script>
+
+<!-- ══ Schema.org ══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Attorney",
+  "@id": "https://stovpovaya.ru/#attorney",
+  "name": "Адвокат Стовповая Анастасия Олеговна",
+  "alternateName": "Стовповая Анастасия Олеговна",
+  "description": "Адвокат в Санкт-Петербурге. 17 лет в праве, 10 из них — в органах прокуратуры. Защита на всех стадиях: уголовные, гражданские, семейные и жилищные дела.",
+  "url": "https://stovpovaya.ru/",
+  "image": "https://stovpovaya.ru/img/portrait.png",
+  "telephone": "+79111558595",
+  "email": "ЗАМЕНИТЬ@stovpovaya.ru",
+  "priceRange": "$$",
+  "inLanguage": "ru",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "2-я линия Васильевского острова, 37",
+    "addressLocality": "Санкт-Петербург",
+    "addressRegion": "Санкт-Петербург",
+    "addressCountry": "RU"
+  },
+  "sameAs": ["https://uslugi.yandex.ru/profile/AnastasiyaStovpovaya-1060950"],
+  "areaServed": [
+    { "@type": "City", "name": "Санкт-Петербург" },
+    { "@type": "AdministrativeArea", "name": "Ленинградская область" }
+  ],
+  "founder": {
+    "@type": "Person",
+    "name": "Стовповая Анастасия Олеговна",
+    "jobTitle": "Адвокат",
+    "memberOf": {
+      "@type": "Organization",
+      "name": "Адвокатская палата Ленинградской области"
+    },
+    "identifier": "47/2089"
+  },
+  "knowsAbout": [
+    "Уголовные дела",
+    "Гражданские споры",
+    "Семейные дела",
+    "Жилищные споры",
+    "Наследственные дела",
+    "Земельные споры",
+    "ДТП и споры со страховыми компаниями",
+    "Административные дела"
+  ],
+  "availableLanguage": "ru",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+79111558595",
+    "contactType": "customer service",
+    "areaServed": "RU",
+    "availableLanguage": "ru"
+  }
+}
+</script>
+</head>
+
+<body>
+<a class="skip" href="#main">К основному содержанию</a>
+
+<!-- ══════════════ ШАПКА ══════════════ -->
+<header class="site-head" id="head">
+  <div class="shell site-head__in">
+    <a class="brand" href="#top" aria-label="Стовповая Анастасия Олеговна, адвокат — в начало">
+      <span class="brand__name">Стовповая А.&nbsp;О.</span>
+      <span class="brand__role">адвокат</span>
+    </a>
+
+    <nav class="nav" aria-label="Разделы страницы">
+      <a href="#about">О себе</a>
+      <a href="#areas">Направления</a>
+      <a href="#method">Как я работаю</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+
+    <a class="head-cta" href="tel:+79111558595">+7 911 155-85-95</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero" id="top">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="hero__light" aria-hidden="true"></div>
+  <div class="hero__grain" aria-hidden="true"></div>
+
+  <div class="shell hero__inner">
+    <div class="hero__col">
+      <p class="eyebrow hero__fade" style="--d:60ms">
+        <span class="eyebrow__tick" aria-hidden="true"></span>Адвокат · Санкт-Петербург
+      </p>
+
+      <h1 class="hero__title">
+        <span class="line" style="--d:140ms"><span>Защита</span></span>
+        <span class="line" style="--d:230ms"><span>на всех стадиях.</span></span>
+        <span class="line hero__title-sub" style="--d:340ms"><span>10 лет в прокуратуре — теперь на вашей стороне.</span></span>
+      </h1>
+
+      <p class="hero__lede hero__fade" style="--d:470ms">
+        17 лет в праве. Уголовные, гражданские, семейные и жилищные дела.
+        Знаю систему изнутри — и использую это, чтобы защитить ваши права.
+      </p>
+
+      <ul class="hero__meta hero__fade" style="--d:570ms">
+        <li>Рег. № 47/2089</li>
+        <li>Адвокатская палата Ленинградской области</li>
+        <li>Ведение дел лично</li>
+        <li>Выезд при задержании — круглосуточно</li>
+      </ul>
+
+      <div class="hero__cta hero__fade" style="--d:660ms">
+        <!-- Текст кнопки в span: под ним лежит слой заливки, наезжающей
+             при наведении, и без обёртки он оказался бы перекрыт. -->
+        <a class="btn btn--primary" href="https://wa.me/79111558595"
+           target="_blank" rel="noopener"><span>Написать в WhatsApp</span></a>
+        <!-- ЗАМЕНИТЬ при наличии @username: https://t.me/username -->
+        <a class="btn btn--ghost" href="https://t.me/+79111558595"
+           target="_blank" rel="noopener"><span>Telegram</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Портрет с вырезанным фоном: PNG и WebP с альфа-каналом.
+       WebP отдаётся первым, PNG — запасной вариант для старых браузеров.
+       Не lazy: это LCP-элемент первого экрана, ленивая загрузка убила бы метрику.
+       В разметке идёт последним — на мобильном фигура встаёт под текстом,
+       на десктопе позиционируется абсолютно к правому краю. -->
+  <figure class="hero__media" id="heroMedia">
+    <picture>
+      <!-- WebP собран из этого же PNG: 55 КБ против 337. -->
+      <source srcset="img/portrait.webp" type="image/webp">
+      <img class="hero__img"
+           src="img/portrait.png"
+           alt="Адвокат Стовповая Анастасия Олеговна"
+           width="480" height="1161"
+           fetchpriority="high" decoding="async">
+    </picture>
+    <span class="hero__ph" aria-hidden="true">портрет · png с альфа-каналом</span>
+  </figure>
+</section>
+
+<!-- ══════════════ О СЕБЕ ══════════════ -->
+<section class="sec sec--about" id="about">
+  <div class="shell">
+    <div class="sec__grid">
+      <!-- Метка раздела здесь и есть заголовок H2: у секции нет крупного
+           титула, а иерархия H1 → H2 должна оставаться непрерывной. -->
+      <h2 class="label" data-rv><span class="label__idx">01</span>О себе</h2>
+
+      <div class="about__text">
+        <p class="lede" data-rv>
+          Семнадцать лет в праве. Десять из них — в органах прокуратуры:
+          государственное обвинение, надзор за следствием, проверка
+          законности процессуальных решений.
+        </p>
+        <p data-rv>
+          Я знаю, как дело выглядит со стороны обвинения: где следствие
+          торопится, какие доказательства рассыпаются в суде, на каком
+          этапе ошибку ещё можно исправить, а когда становится поздно.
+          Последние семь лет работаю по другую сторону — на стороне защиты.
+        </p>
+        <p data-rv>
+          Веду дела в Санкт-Петербурге и Ленинградской области. Работаю
+          лично: от первого разговора до вступления решения в силу.
+        </p>
+      </div>
+    </div>
+
+    <!-- Факты строкой, не карточками -->
+    <dl class="facts">
+      <!-- data-count: цифра набегает от нуля при появлении в кадре.
+           Без JS в разметке остаётся готовое число. -->
+      <div class="facts__i" data-rv>
+        <dt class="facts__n" data-count="17">17</dt><dd class="facts__l">лет в праве</dd>
+      </div>
+      <div class="facts__i" data-rv>
+        <dt class="facts__n" data-count="10">10</dt><dd class="facts__l">лет в органах прокуратуры</dd>
+      </div>
+      <div class="facts__i" data-rv>
+        <dt class="facts__n" data-count="4">4</dt><dd class="facts__l">инстанции — от следствия до кассации</dd>
+      </div>
+      <div class="facts__i" data-rv>
+        <dt class="facts__n facts__n--sm">47/2089</dt><dd class="facts__l">номер в реестре адвокатов ЛО</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- ══════════════ НАПРАВЛЕНИЯ ══════════════
+     Не плитки: нумерованный список с разным типографическим весом.
+     Первые два направления — основные, набраны крупнее. -->
+<section class="sec sec--areas" id="areas">
+  <div class="shell">
+    <div class="sec__grid">
+      <p class="label" data-rv><span class="label__idx">02</span>Направления</p>
+      <h2 class="sec__title" data-rv>
+        Восемь направлений.
+        <span class="muted">Веду дело целиком, а не отдельные заседания.</span>
+      </h2>
+    </div>
+
+    <ol class="areas">
+      <li class="areas__i areas__i--lead" data-rv>
+        <span class="areas__n">01</span>
+        <h3 class="areas__t">Уголовные дела</h3>
+        <p class="areas__d">Защита с момента задержания: доследственная проверка, следствие, суд первой инстанции, апелляция и кассация.</p>
+      </li>
+      <li class="areas__i areas__i--lead" data-rv>
+        <span class="areas__n">02</span>
+        <h3 class="areas__t">Гражданские споры</h3>
+        <p class="areas__d">Взыскание долгов, возмещение ущерба, оспаривание сделок, защита прав потребителей.</p>
+      </li>
+      <li class="areas__i" data-rv>
+        <span class="areas__n">03</span>
+        <h3 class="areas__t">Семейные дела</h3>
+        <p class="areas__d">Расторжение брака, раздел имущества, споры о детях, алименты.</p>
+      </li>
+      <li class="areas__i" data-rv>
+        <span class="areas__n">04</span>
+        <h3 class="areas__t">Жилищные споры</h3>
+        <p class="areas__d">Выселение и вселение, приватизация, споры с застройщиком и управляющей компанией.</p>
+      </li>
+      <li class="areas__i" data-rv>
+        <span class="areas__n">05</span>
+        <h3 class="areas__t">Наследственные дела</h3>
+        <p class="areas__d">Восстановление сроков, оспаривание завещаний, раздел наследственной массы.</p>
+      </li>
+      <li class="areas__i" data-rv>
+        <span class="areas__n">06</span>
+        <h3 class="areas__t">Земельные споры</h3>
+        <p class="areas__d">Границы участков, самовольные постройки, сервитуты, изъятие земли.</p>
+      </li>
+      <li class="areas__i" data-rv>
+        <span class="areas__n">07</span>
+        <h3 class="areas__t">ДТП и страховые споры</h3>
+        <p class="areas__d">Возмещение ущерба, разногласия со страховой, лишение водительских прав.</p>
+      </li>
+      <li class="areas__i" data-rv>
+        <span class="areas__n">08</span>
+        <h3 class="areas__t">Административные дела</h3>
+        <p class="areas__d">Обжалование постановлений, действий и бездействия должностных лиц.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══════════════ КАК Я РАБОТАЮ ══════════════ -->
+<section class="sec sec--method" id="method">
+  <div class="shell">
+    <div class="sec__grid">
+      <p class="label" data-rv><span class="label__idx">03</span>Как я работаю</p>
+      <h2 class="sec__title" data-rv>
+        Четыре правила,
+        <span class="muted">о которых договариваемся на берегу.</span>
+      </h2>
+    </div>
+
+    <div class="rules">
+      <article class="rules__i" data-rv>
+        <span class="rules__n">01</span>
+        <h3 class="rules__t">Оценка перспективы до договора</h3>
+        <p>Сначала читаю документы и говорю прямо: что реально получить, что нет, сколько это займёт. Если дело бесперспективно — скажу об этом, а не возьму гонорар.</p>
+      </article>
+      <article class="rules__i" data-rv>
+        <span class="rules__n">02</span>
+        <h3 class="rules__t">Одно дело — один адвокат</h3>
+        <p>Вашим делом занимаюсь я. Не передаю помощникам и не появляюсь в процессе впервые в день заседания.</p>
+      </article>
+      <article class="rules__i" data-rv>
+        <span class="rules__n">03</span>
+        <h3 class="rules__t">Фиксированная стоимость этапа</h3>
+        <p>Стоимость каждой стадии обсуждается заранее и закрепляется в соглашении. Без дополнительных счетов по ходу дела.</p>
+      </article>
+      <article class="rules__i" data-rv>
+        <span class="rules__n">04</span>
+        <h3 class="rules__t">Связь без расписания</h3>
+        <p>На срочный вопрос отвечаю в тот же день. При задержании выезжаю круглосуточно — включая выходные.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ КОНТАКТЫ ══════════════ -->
+<!-- ══════════════ ОТЗЫВЫ ══════════════
+     Тексты отзывов сознательно не скопированы: перепечатка на своём
+     сайте ничего не доказывает, доверие даёт только первоисточник.
+     Поэтому здесь живой рейтинг из профиля и переход туда.
+
+     Когда появится карточка организации в Яндекс Бизнесе — на её
+     месте встанет официальный виджет с настоящими отзывами.
+     Инструкция в комментарии ниже, менять придётся один блок. -->
+<section class="sec sec--reviews" id="reviews">
+  <div class="shell">
+    <div class="sec__grid">
+      <p class="label" data-rv><span class="label__idx">04</span>Отзывы</p>
+      <h2 class="sec__title" data-rv>
+        22 оценки, средняя — 5,0.
+        <span class="muted">Все отзывы проверены Яндексом: их оставляют только реальные клиенты.</span>
+      </h2>
+    </div>
+
+    <div class="rev">
+      <!-- Оценка набирается типографикой, без звёздочек-картинок -->
+      <div class="rev__score" data-rv>
+        <p class="rev__num">5,0</p>
+        <p class="rev__of">из 5,0</p>
+        <p class="rev__meta">22 оценки · Яндекс Услуги</p>
+        <a class="rev__link" href="https://uslugi.yandex.ru/profile/AnastasiyaStovpovaya-1060950"
+           target="_blank" rel="noopener nofollow">
+          Читать отзывы на Яндексе
+        </a>
+      </div>
+
+      <!-- Отзывы перенесены с профиля дословно, с именем и датой автора.
+           Ничего не переписано и не сокращено кроме мест, помеченных
+           многоточием. Источник указан ссылкой ниже — без неё
+           перепечатка на своём сайте ничего не стоит. -->
+      <blockquote class="rev__lead" data-rv>
+        <p>
+          До Анастасии Олеговны консультировалась с несколькими другими
+          специалистами, ответы были невнятные, но сразу же побуждали
+          к заключению договора. Анастасия дала объективную, честную и очень
+          профессиональную консультацию. В итоге остановила свой выбор на ней
+          и доверила разрешение моего дела. Это было максимально правильное
+          решение!
+        </p>
+        <footer><cite>Анна Лебедева</cite><span>6 августа 2024</span></footer>
+      </blockquote>
+    </div>
+
+    <!-- Второй ряд набран мельче: три равные карточки — первый признак
+         шаблона, вес распределён по длине и содержательности отзыва. -->
+    <div class="rev__more">
+      <blockquote data-rv>
+        <p>
+          …Мы обратились к Анастасии Олеговне по вопросу получения наследства
+          от нашей тёти. И хотя так получилось, что мы не знали о её кончине
+          и из-за этого вовремя не предъявили свои права, после чего в дело
+          вмешались «чёрные риелторы», — Анастасии Олеговне удалось в правовом
+          порядке решить все эти сложные вопросы. … Дело завершилось
+          в нашу пользу.
+        </p>
+        <footer><cite>Дмитрий Тарасов</cite><span>27 августа 2024</span></footer>
+      </blockquote>
+
+      <blockquote data-rv>
+        <p>Профессионально, Спокойно, Результативно. Благодарю.</p>
+        <footer><cite>Виктор Ф.</cite><span>7 февраля 2025</span></footer>
+      </blockquote>
+    </div>
+
+    <p class="rev__all" data-rv>
+      <a href="https://uslugi.yandex.ru/profile/AnastasiyaStovpovaya-1060950"
+         target="_blank" rel="noopener nofollow">Все 22 отзыва на Яндекс Услугах</a>
+    </p>
+  </div>
+</section>
+
+<section class="sec sec--contacts" id="contacts">
+  <div class="shell">
+    <p class="label" data-rv><span class="label__idx">05</span>Контакты</p>
+
+    <!-- Без принудительных <br>: строки режет max-width + text-wrap:balance,
+         иначе на промежуточных ширинах вылезает рваный «хвост». -->
+    <h2 class="contacts__h" data-rv>
+      Первая консультация — разбор документов
+      и честная оценка перспектив.
+    </h2>
+
+    <div class="contacts__cta" data-rv>
+      <a class="btn btn--primary" href="https://wa.me/79111558595" target="_blank" rel="noopener"><span>Написать в WhatsApp</span></a>
+      <a class="btn btn--ghost-ink" href="https://t.me/+79111558595" target="_blank" rel="noopener"><span>Telegram</span></a>
+    </div>
+
+    <dl class="contacts__list">
+      <div class="contacts__row" data-rv>
+        <dt>Телефон</dt>
+        <dd><a class="link" href="tel:+79111558595">+7 911 155-85-95</a></dd>
+      </div>
+      <div class="contacts__row" data-rv>
+        <dt>Почта</dt>
+        <!-- ЗАМЕНИТЬ на рабочий e-mail -->
+        <dd><a class="link" href="mailto:ЗАМЕНИТЬ@stovpovaya.ru">ЗАМЕНИТЬ@stovpovaya.ru</a></dd>
+      </div>
+      <div class="contacts__row" data-rv>
+        <dt>Адрес</dt>
+        <dd>Санкт-Петербург, 2-я линия В.&nbsp;О., 37 — по предварительной записи</dd>
+      </div>
+      <div class="contacts__row" data-rv>
+        <dt>Реестр</dt>
+        <dd>Адвокатская палата Ленинградской области, № 47/2089</dd>
+      </div>
+    </dl>
+
+    <!-- Карта грузится по мере приближения к экрану (loading="lazy"):
+         iframe Яндекса тянет свои скрипты, и без этого он утащил бы
+         показатели скорости всей страницы вниз.
+         Адрес передаётся текстом — Яндекс сам ставит метку, поэтому
+         координаты не зашиты и не разъедутся при переезде офиса. -->
+    <figure class="map" data-rv>
+      <iframe
+        src="https://yandex.ru/map-widget/v1/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%202-%D1%8F%20%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F%20%D0%92%D0%B0%D1%81%D0%B8%D0%BB%D1%8C%D0%B5%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE%20%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B2%D0%B0%2C%2037&amp;z=16"
+        title="Карта: Санкт-Петербург, 2-я линия Васильевского острова, 37"
+        loading="lazy" allowfullscreen></iframe>
+      <figcaption>
+        Василеостровский район, семь минут пешком от метро «Василеостровская»
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════ ПОДВАЛ ══════════════ -->
+<footer class="site-foot">
+  <div class="shell site-foot__in">
+    <p>© <span id="year">2026</span> Стовповая Анастасия Олеговна</p>
+    <p class="site-foot__note">Информация на сайте носит справочный характер и не является публичной офертой.</p>
+  </div>
+</footer>
+
+</body>
+</html>

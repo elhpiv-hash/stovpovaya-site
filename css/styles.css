@@ -1,0 +1,486 @@
+/* ══════════════════════════════════════════════════════════════════════
+   styles.css — всё, что ниже первого экрана.
+   Токены, сброс, шапка, hero и кнопки лежат инлайном в <head> index.html
+   (критический CSS). Здесь их намеренно нет — дублировать нечего.
+
+   Палитра монохромная: тёплый off-white и графит. Цветного акцента нет —
+   иерархия строится кеглем, весом, волосяными линиями и инверсией.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Общий ритм секций ──────────────────────────────────────────────
+   Отступы намеренно неодинаковые: секции дышат по-разному.           */
+.sec{
+  position:relative;
+  padding-block:clamp(4rem, 7.5vw, 7rem);
+  scroll-margin-top:clamp(58px, 4.6vw, 72px);
+}
+.sec--about   { padding-top:clamp(4.5rem, 9vw, 8.5rem); }
+.sec--areas   { background:var(--paper-hi); border-block:1px solid var(--hair-soft); }
+.sec--method  { padding-block:clamp(4.5rem, 8vw, 7.5rem); }
+.sec--contacts{
+  background:var(--paper-hi);
+  border-top:1px solid var(--hair-soft);
+  padding-bottom:clamp(3.5rem, 6vw, 5.5rem);
+}
+
+/* ── Метка раздела ──────────────────────────────────────────────────
+   Мелкий моношрифт + короткая линия сверху.                          */
+.label{
+  font-family:var(--mono);
+  font-size:.625rem;
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-52);
+  padding-top:1rem;
+  position:relative;
+}
+/* Линия прочерчивается при появлении секции, а не стоит готовой */
+.label::before{
+  content:'';
+  position:absolute; top:0; left:0;
+  width:34px; height:1px;
+  background:var(--ink);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .7s var(--ease) .1s;
+}
+.label.is-in::before,
+.is-in .label::before{ transform:scaleX(1); }
+.label__idx{ margin-right:1.1em; color:var(--ink); }
+
+/* ── Асимметричная сетка «метка / контент» ──────────────────────────
+   На десктопе метка стоит в узкой левой колонке и залипает при
+   скролле, контент смещён вправо и не занимает всю ширину.          */
+.sec__grid{ display:grid; gap:clamp(1.75rem, 3.4vw, 3rem); }
+
+@media (min-width:900px){
+  .sec__grid{
+    grid-template-columns:minmax(0, 13rem) minmax(0, 1fr);
+    column-gap:clamp(2.5rem, 5.5vw, 6rem);
+    align-items:start;
+  }
+  /* Залипает только метка внутри двухколоночной сетки. В контактах
+     метка стоит отдельно и sticky ей не нужен — иначе она уезжает
+     поверх заголовка. */
+  .sec__grid > .label{ position:sticky; top:calc(clamp(58px,4.6vw,72px) + 2rem); }
+}
+
+/* Заголовок секции: две ступени в одном H2 */
+.sec__title{
+  font-size:clamp(1.5rem, 3.2vw, 2.25rem);
+  font-weight:600;
+  line-height:1.12;
+  letter-spacing:-.032em;
+  max-width:20ch;
+  text-wrap:balance;
+}
+.sec__title .muted{ display:block; color:var(--ink-52); }
+.muted{ color:var(--ink-52); }
+
+/* ══ О СЕБЕ ════════════════════════════════════════════════════════ */
+.about__text{ max-width:54ch; }
+.about__text p + p{ margin-top:1.3em; color:var(--ink-70); }
+
+.about__text .lede{
+  font-size:clamp(1.125rem, 2.2vw, 1.375rem);
+  font-weight:500;
+  line-height:1.38;
+  letter-spacing:-.024em;
+  color:var(--ink);
+  text-wrap:pretty;
+}
+
+/* Факты — строка с волосяными разделителями, без карточек и теней */
+.facts{
+  margin-top:clamp(3rem, 6.5vw, 6rem);
+  display:grid;
+  gap:0;
+  border-top:1px solid var(--hair);
+}
+.facts__i{
+  padding-block:1.35rem;
+  border-bottom:1px solid var(--hair-soft);
+  display:flex; align-items:baseline; gap:1.1rem;
+}
+.facts__n{
+  font-size:clamp(1.875rem, 4.4vw, 2.5rem);
+  font-weight:600;
+  letter-spacing:-.045em;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+  min-width:2.2em;
+}
+.facts__n--sm{
+  font-family:var(--mono);
+  font-size:clamp(1rem, 2.6vw, 1.1875rem);
+  font-weight:400;
+  letter-spacing:-.01em;
+}
+.facts__l{
+  color:var(--ink-52);
+  font-size:.875rem;
+  line-height:1.45;
+  max-width:22ch;
+}
+
+@media (min-width:768px){
+  /* Ширины колонок разные — сетка со смещением, а не четыре равные плитки */
+  .facts{ grid-template-columns:.85fr .95fr 1.15fr 1.05fr; }
+  .facts__i{
+    flex-direction:column; align-items:flex-start; gap:.9rem;
+    padding:1.9rem clamp(.75rem,1.6vw,1.5rem) 1.9rem 0;
+    border-bottom:none;
+    border-left:1px solid var(--hair-soft);
+    padding-left:clamp(1rem, 2vw, 1.85rem);
+  }
+  .facts__i:first-child{ border-left:none; padding-left:0; }
+  .facts__n{ min-width:0; }
+}
+
+/* ══ НАПРАВЛЕНИЯ ═══════════════════════════════════════════════════
+   Список, а не плитки. Ширина списка ограничена: на широком мониторе
+   строка иначе растягивалась через весь экран и разваливалась на три
+   далёкие друг от друга части.
+   Разница кегля между основными и остальными направлениями — около
+   1.4×, а не двукратная: скачок в два раза читался как сбой вёрстки. */
+.areas{
+  margin-top:clamp(2.5rem, 5vw, 4.5rem);
+  max-width:72rem;
+  border-top:1px solid var(--hair);
+}
+.areas__i{
+  position:relative;
+  display:grid;
+  grid-template-columns:2.5rem minmax(0, 1fr);
+  column-gap:.75rem;
+  padding-block:clamp(1.25rem, 2.2vw, 1.65rem);
+  padding-inline:clamp(.5rem, 1.2vw, 1rem);
+  margin-inline:clamp(-1rem, -1.2vw, -.5rem);
+  border-bottom:1px solid var(--hair-soft);
+  transition:background-color .45s var(--ease);
+}
+/* Тонкая линия прочерчивается по низу строки при наведении —
+   декоративная реакция, без ложного вида кликабельности. */
+.areas__i::after{
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px;
+  background:var(--ink);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .6s var(--ease);
+}
+.areas__i:hover{ background:rgba(26,26,28,.022); }
+.areas__i:hover::after{ transform:scaleX(1); }
+
+.areas__n{
+  grid-column:1;
+  font-family:var(--mono);
+  font-size:.6875rem;
+  color:var(--ink-52);
+  padding-top:.5em;
+  letter-spacing:.02em;
+  transition:color .45s var(--ease);
+}
+.areas__i:hover .areas__n{ color:var(--ink); }
+
+.areas__t{
+  grid-column:2;
+  font-size:1.0625rem;
+  font-weight:600;
+  letter-spacing:-.022em;
+  line-height:1.25;
+}
+.areas__d{
+  grid-column:2;
+  margin-top:.4rem;
+  color:var(--ink-52);
+  font-size:.875rem;
+  line-height:1.55;
+  max-width:56ch;
+}
+
+/* Основные направления — крупнее и плотнее набраны */
+.areas__i--lead{ padding-block:clamp(1.6rem, 2.8vw, 2.1rem); }
+.areas__i--lead .areas__t{
+  font-size:clamp(1.25rem, 2.2vw, 1.5rem);
+  letter-spacing:-.03em;
+}
+.areas__i--lead .areas__d{ color:var(--ink-70); }
+.areas__i--lead .areas__n{ color:var(--ink); }
+
+@media (min-width:900px){
+  /* Колонки конечной ширины, а не 1fr: растянутые на всю ширину экрана
+     номер, название и описание оказывались в трёх разных концах строки
+     и переставали читаться как одна запись. Волосяная линия при этом
+     идёт во всю ширину списка — контент собран, разлиновка широкая. */
+  .areas__i{
+    grid-template-columns:3.25rem minmax(0, 14rem) minmax(0, 26rem);
+    justify-content:start;
+    column-gap:clamp(1.25rem, 2.2vw, 2rem);
+    align-items:start;
+  }
+  /* На широком экране описание встаёт в третью колонку, вровень с названием */
+  .areas__d{ grid-column:3; grid-row:1; margin-top:.15rem; max-width:none; }
+  .areas__i--lead{ grid-template-columns:3.25rem minmax(0, 16rem) minmax(0, 28rem); }
+  .areas__i--lead .areas__d{ margin-top:.3rem; }
+  .areas__i--lead .areas__n{ padding-top:.65em; }
+}
+
+/* ══ КАК Я РАБОТАЮ ═════════════════════════════════════════════════ */
+.rules{
+  margin-top:clamp(2.5rem, 5vw, 4.5rem);
+  display:grid;
+  gap:clamp(2rem, 4vw, 3rem);
+}
+.rules__i{ max-width:44ch; }
+.rules__n{
+  display:block;
+  font-family:var(--mono);
+  font-size:.625rem;
+  letter-spacing:.14em;
+  color:var(--ink-52);
+  padding-bottom:.9rem;
+  margin-bottom:1.1rem;
+  border-bottom:1px solid var(--hair);
+}
+.rules__t{
+  font-size:clamp(1.0625rem, 2vw, 1.1875rem);
+  font-weight:600;
+  letter-spacing:-.024em;
+  line-height:1.28;
+  margin-bottom:.6rem;
+}
+.rules__i p{ color:var(--ink-70); font-size:.875rem; line-height:1.65; }
+
+@media (min-width:900px){
+  .rules{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    column-gap:clamp(2.5rem, 6vw, 7rem);
+    row-gap:clamp(3rem, 5.5vw, 5rem);
+  }
+  /* Намеренный вертикальный сдвиг правой колонки */
+  .rules__i:nth-child(even){ transform:translateY(clamp(1.75rem, 4vw, 3.5rem)); }
+  .rules__i:nth-child(3){ margin-top:calc(clamp(1.75rem, 4vw, 3.5rem) * -.35); }
+}
+
+/* ══ ОТЗЫВЫ ════════════════════════════════════════════════════════
+   Оценка набрана типографикой: звёздочки-картинки — первый признак
+   шаблона, а крупная цифра работает не хуже.                        */
+.sec--reviews{ background:var(--paper-hi); border-bottom:1px solid var(--hair-soft); }
+
+.rev{
+  margin-top:clamp(2.5rem, 5vw, 4.5rem);
+  display:grid; gap:clamp(1.5rem, 3vw, 2.5rem);
+  align-items:stretch;
+}
+@media (min-width:900px){
+  /* Намеренно неравные колонки: оценка компактная, отзывы просторные */
+  .rev{ grid-template-columns:minmax(0, 17rem) minmax(0, 1fr); }
+}
+
+.rev__score{
+  padding:clamp(1.5rem, 2.6vw, 2rem);
+  border:1px solid var(--hair);
+  border-radius:3px;
+  display:flex; flex-direction:column;
+}
+.rev__num{
+  font-size:clamp(3rem, 7vw, 4.25rem);
+  font-weight:600; line-height:.9; letter-spacing:-.05em;
+  font-variant-numeric:tabular-nums;
+}
+.rev__of{
+  margin-top:.4rem;
+  font-family:var(--mono); font-size:.6875rem; letter-spacing:.1em;
+  color:var(--ink-52);
+}
+.rev__meta{
+  margin-top:auto; padding-top:1.75rem;
+  font-family:var(--mono); font-size:.625rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-52);
+}
+.rev__link{
+  margin-top:1rem; align-self:flex-start;
+  font-size:.875rem; font-weight:500;
+  border-bottom:1px solid var(--hair);
+  padding-bottom:.15em;
+  transition:border-color .35s var(--ease);
+}
+.rev__link:hover{ border-color:var(--ink); }
+
+/* ── Сами отзывы ───────────────────────────────────────────────────
+   Кавычек-картинок и аватарок нет: имя и дата под текстом дают
+   доверие лучше, чем декоративная кавычка на пол-экрана.          */
+/* Селектор по секции, а не по .rev: второй ряд отзывов лежит
+   отдельным блоком, и правила, привязанные к .rev, до него не доходили. */
+#reviews blockquote{ margin:0; }
+#reviews blockquote footer{
+  margin-top:1.1rem;
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:.35rem 1rem;
+  font-family:var(--mono); font-size:.625rem; letter-spacing:.12em;
+  text-transform:uppercase;
+}
+#reviews blockquote cite{ font-style:normal; color:var(--ink); }
+#reviews blockquote footer span{ color:var(--ink-52); }
+
+/* Главный отзыв — крупнее, он несёт основную мысль раздела */
+.rev__lead{
+  padding:clamp(1.5rem, 2.6vw, 2.25rem);
+  border:1px solid var(--hair);
+  border-radius:3px;
+}
+.rev__lead p{
+  font-size:clamp(1.0625rem, 1.9vw, 1.25rem);
+  line-height:1.5;
+  letter-spacing:-.018em;
+  text-wrap:pretty;
+}
+
+/* Второй ряд — мельче и без рамок, только волосяная линия сверху */
+.rev__more{
+  margin-top:clamp(2rem, 3.5vw, 3rem);
+  display:grid; gap:clamp(1.75rem, 3vw, 2.5rem);
+}
+.rev__more blockquote{
+  padding-top:1.6rem;
+  border-top:1px solid var(--hair);
+}
+.rev__more p{ color:var(--ink-70); font-size:.9375rem; line-height:1.6; }
+
+@media (min-width:900px){
+  /* Колонки неравные: длинный отзыв шире короткого */
+  .rev__more{ grid-template-columns:1.55fr 1fr; column-gap:clamp(2.5rem, 5vw, 5rem); }
+}
+
+.rev__all{ margin-top:clamp(2rem, 3.5vw, 2.75rem); }
+.rev__all a{
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.06em;
+  border-bottom:1px solid var(--hair); padding-bottom:.2em;
+  transition:border-color .35s var(--ease);
+}
+.rev__all a::after{ content:' →'; }
+.rev__all a:hover{ border-color:var(--ink); }
+
+/* ══ КАРТА ═════════════════════════════════════════════════════════ */
+.map{
+  margin-top:clamp(2.5rem, 5vw, 4rem);
+  max-width:58rem;
+}
+.map iframe{
+  display:block; width:100%; border:0;
+  height:clamp(300px, 42vw, 420px);
+  border-radius:3px;
+  /* Яндекс отдаёт карту в светлой теме — слегка приглушаем,
+     чтобы она не была самым ярким пятном на странице. */
+  filter:saturate(.85) contrast(.96);
+}
+.map figcaption{
+  margin-top:.9rem;
+  font-family:var(--mono); font-size:.625rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-52);
+}
+
+/* ══ КОНТАКТЫ ══════════════════════════════════════════════════════ */
+.contacts__h{
+  margin-top:clamp(2rem, 4vw, 3rem);
+  font-size:clamp(1.75rem, 4vw, 2.75rem);
+  font-weight:600;
+  line-height:1.08;
+  letter-spacing:-.036em;
+  max-width:20ch;
+  text-wrap:balance;
+}
+.contacts__cta{
+  margin-top:clamp(1.85rem, 3.5vw, 2.5rem);
+  display:flex; flex-wrap:wrap; gap:.7rem;
+}
+
+.contacts__list{
+  margin-top:clamp(3rem, 6.5vw, 5.5rem);
+  border-top:1px solid var(--hair);
+  max-width:58rem;
+}
+.contacts__row{
+  display:grid;
+  gap:.3rem;
+  padding-block:1.15rem;
+  border-bottom:1px solid var(--hair-soft);
+}
+.contacts__row dt{
+  font-family:var(--mono);
+  font-size:.625rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-52);
+  padding-top:.35em;
+}
+.contacts__row dd{
+  margin:0;
+  font-size:clamp(1rem, 2vw, 1.125rem);
+  letter-spacing:-.018em;
+}
+
+@media (min-width:768px){
+  .contacts__row{ grid-template-columns:12rem minmax(0, 1fr); gap:2rem; }
+}
+
+/* Подчёркивание тонкой линией, утолщается на наведении */
+.link{
+  background-image:linear-gradient(var(--ink), var(--ink));
+  background-repeat:no-repeat;
+  background-position:0 100%;
+  background-size:100% 1px;
+  padding-bottom:.12em;
+  transition:background-size .4s var(--ease);
+}
+.link:hover{ background-size:100% 2px; }
+
+/* ══ ПОДВАЛ ════════════════════════════════════════════════════════ */
+.site-foot{
+  border-top:1px solid var(--hair);
+  padding-block:1.85rem 2.25rem;
+  font-family:var(--mono);
+  font-size:.625rem;
+  letter-spacing:.03em;
+  color:var(--ink-52);
+  line-height:1.7;
+}
+.site-foot__in{ display:grid; gap:.5rem; }
+@media (min-width:768px){
+  .site-foot__in{
+    grid-template-columns:auto minmax(0, 32rem);
+    justify-content:space-between; align-items:baseline; gap:3rem;
+  }
+  .site-foot__note{ text-align:right; }
+}
+
+/* ══ ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ════════════════════════════════════════
+   Сдвиг, прозрачность и лёгкая расфокусировка. Размытие снимается
+   к концу движения — за счёт него элемент «наводится на резкость»,
+   а не просто выезжает. Класс ставит IntersectionObserver, один раз. */
+.js [data-rv]{
+  opacity:0;
+  transform:translateY(16px);
+  filter:blur(5px);
+  transition:opacity .75s var(--ease) var(--rd, 0ms),
+             transform .95s var(--ease) var(--rd, 0ms),
+             filter .75s var(--ease) var(--rd, 0ms);
+}
+.js [data-rv].is-in{ opacity:1; transform:none; filter:none; }
+
+/* Строки списка направлений выезжают чуть заметнее — их много,
+   и одинаковое движение восемь раз подряд читалось бы вяло. */
+.js .areas__i[data-rv]{ transform:translateY(22px); }
+
+@media (prefers-reduced-motion:reduce){
+  .js [data-rv]{ opacity:1; transform:none; filter:none; transition:none; }
+  .rules__i:nth-child(even){ transform:none; }
+  .label::before{ transform:scaleX(1); transition:none; }
+  .areas__i::after{ display:none; }
+}
+
+/* ══ ПЕЧАТЬ ═══════════════════════════════════════════════════════ */
+@media print{
+  .site-head, .hero__media, .hero__grain, .contacts__cta, .hero__cta{ display:none; }
+  .hero{ min-height:auto; background:#fff; color:#000; }
+  body{ background:#fff; }
+  .js [data-rv]{ opacity:1; transform:none; filter:none; }
+}
