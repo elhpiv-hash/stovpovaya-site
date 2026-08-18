@@ -189,6 +189,41 @@
     if (img.complete && img.naturalWidth === 0) markEmpty();
   }
 
+  /* ── Бургер ─────────────────────────────────────────────────────────
+     Атрибут hidden снимается только при открытии: пока меню закрыто,
+     его ссылки не должны попадать в обход с клавиатуры.              */
+  var burger = document.getElementById('burger');
+  var menu = document.getElementById('menu');
+
+  if (burger && menu) {
+    var setMenu = function (open) {
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.hidden = !open;
+    };
+
+    burger.addEventListener('click', function () {
+      setMenu(burger.getAttribute('aria-expanded') !== 'true');
+    });
+
+    // Клик по пункту — переход к разделу, меню закрывается
+    menu.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') setMenu(false);
+    });
+
+    // Escape закрывает и возвращает фокус на кнопку
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+        setMenu(false);
+        burger.focus();
+      }
+    });
+
+    // При переходе на десктопную ширину меню закрываем: там своя навигация
+    var wide = window.matchMedia('(min-width: 1024px)');
+    var onWide = function (m) { if (m.matches) setMenu(false); };
+    if (wide.addEventListener) wide.addEventListener('change', onWide);
+  }
+
   /* ── Год в подвале ──────────────────────────────────────────────── */
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();

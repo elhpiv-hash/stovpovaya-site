@@ -279,6 +279,10 @@ body{
   .nav a:hover::after{ transform:scaleX(1); }
 }
 
+/* На телефоне номер из шапки убран: там уже есть бургер, а звонок
+   вынесен в нижнюю панель. Втроём они не помещались в строку. */
+.head-cta{ display:none; }
+@media (min-width:1024px){ .head-cta{ display:block; } }
 .head-cta{
   font-family:var(--mono); font-size:.75rem; letter-spacing:.04em;
   border:1px solid var(--hair-night); border-radius:2px;
@@ -287,9 +291,82 @@ body{
 }
 .head-cta:hover{ border-color:currentColor; }
 
+/* ── Бургер и выпадающее меню ───────────────────────────────────────
+   Две линии вместо трёх: третья ничего не добавляет, а composition
+   из двух читается аккуратнее. При открытии складываются в крест. */
+.burger{
+  width:40px; height:40px; margin-right:-8px;
+  background:none; border:0; padding:0; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+}
+.burger span{
+  display:block; width:22px; height:1.5px; background:currentColor;
+  transition:transform .4s var(--ease), opacity .3s var(--ease);
+}
+.burger[aria-expanded="true"] span:first-child{ transform:translateY(3.75px) rotate(45deg); }
+.burger[aria-expanded="true"] span:last-child{ transform:translateY(-3.75px) rotate(-45deg); }
+
+/* [hidden] задаёт display:none, но правило класса с display:flex
+   его перебивает — без этой строки меню висело бы открытым всегда. */
+.menu[hidden]{ display:none; }
+.menu{
+  display:flex; flex-direction:column;
+  padding:.5rem var(--shell-pad) 1.75rem;
+  background:var(--night);
+  border-top:1px solid var(--hair-night);
+}
+.site-head.is-light .menu{ background:var(--paper); border-color:var(--hair-soft); }
+.menu a{
+  padding:.85rem 0;
+  font-size:1.0625rem; letter-spacing:-.02em;
+  border-bottom:1px solid var(--hair-night);
+}
+.site-head.is-light .menu a{ border-color:var(--hair-soft); }
+.menu__tel{
+  font-family:var(--mono); font-size:.8125rem; letter-spacing:.04em;
+  border-bottom:0 !important; padding-top:1.25rem;
+}
+
+@media (min-width:1024px){
+  .burger{ display:none; }
+  .menu{ display:none !important; }
+}
+
+/* ── Нижняя панель связи (телефоны) ────────────────────────────────
+   safe-area — отступ под жестовую полосу iPhone, иначе нижняя
+   кнопка оказывается ровно под ней и не нажимается. */
+.dock{
+  position:fixed; inset-inline:0; bottom:0; z-index:60;
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  background:rgba(21,21,23,.94);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  border-top:1px solid var(--hair-night);
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+.dock__a{
+  display:flex; align-items:center; justify-content:center;
+  min-height:52px; padding:.5rem;
+  font-size:.8125rem; font-weight:500; color:var(--on-night);
+  border-left:1px solid var(--hair-night);
+  transition:background-color .3s var(--ease);
+}
+.dock__a:first-child{ border-left:0; }
+.dock__a:active{ background:rgba(242,240,236,.08); }
+.dock__a--main{ background:var(--on-night); color:var(--night); font-weight:600; }
+
+/* Панель перекрывает низ страницы — освобождаем под неё место */
+body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
+
+@media (min-width:1024px){
+  .dock{ display:none; }
+  body{ padding-bottom:0; }
+}
+
 /* ══ HERO ═══════════════════════════════════════════════════════════ */
 .hero{
   position:relative;
+  display:flex; flex-direction:column;   /* даёт фото встать выше текста */
   min-height:100svh;
   background:var(--night);
   color:var(--on-night);
@@ -322,7 +399,9 @@ body{
 .hero__inner{
   position:relative; z-index:2;
   display:flex; flex-direction:column; justify-content:center;
-  padding-top:calc(clamp(64px,5.4vw,84px) + clamp(2rem,5vw,4.5rem));
+  /* Шапку обходит фото, стоящее выше, — тексту большой отступ сверху
+     не нужен. На десктопе фото абсолютное, и отступ возвращается. */
+  padding-top:clamp(1.5rem, 5vw, 2.25rem);
   padding-bottom:clamp(1rem, 3vw, 2rem);
 }
 .hero__col{ display:flex; flex-direction:column; }
@@ -397,23 +476,42 @@ body{
   }
 }
 
-.hero__cta{
-  margin-top:clamp(2rem, 4vw, 2.75rem);
-  display:flex; flex-wrap:wrap; gap:.75rem;
+/* На телефоне кнопки первого экрана скрыты: они попадали ровно под
+   закреплённую нижнюю панель, а она даёт те же три действия и всегда
+   на виду. На десктопе панели нет — кнопки возвращаются. */
+.hero__cta{ display:none; }
+@media (min-width:1024px){
+  .hero__cta{
+    margin-top:clamp(2rem, 4vw, 2.75rem);
+    display:flex; flex-wrap:wrap; gap:.75rem;
+  }
 }
 
 /* ── Фигура ─────────────────────────────────────────────────────────
    Фон у портрета вырезан, поэтому это не «фотоплан», а силуэт на
    графите. Затемняющих градиентов поверх нет — они бы просто
-   испачкали человека. Вместо них за фигурой мягкое световое пятно:
-   именно оно не даёт вырезке выглядеть наклеенной.
-   Мобильный порядок: фигура под текстом, прижата к низу экрана.     */
+   испачкали человека.
+
+   Фигура вынута из потока и лежит слоем ПОЗАДИ текста, прижатая
+   к правому нижнему углу. Раньше на телефоне она стояла под текстом
+   и целиком уходила за нижнюю границу экрана — человек открывал
+   сайт и видел только буквы.
+
+   Размер задан высотой, ширина считается из соотношения силуэта
+   (480/1161): при вписывании по ширине он получался бы с ладонь. */
 .hero__media{
   position:relative;
-  width:100%;
-  margin-top:clamp(1.5rem, 5vw, 2.5rem);
-  height:clamp(400px, 62vw, 480px);
+  order:-1;                     /* фото поднимается над текстом */
+  width:100%; margin:0;
+  margin-top:clamp(58px, 4.6vw, 72px);   /* начинается под шапкой */
+  height:44svh; min-height:290px; max-height:430px;
   overflow:hidden;
+}
+/* Низ кадра растворяется в фоне — портрет переходит в текст
+   без видимой границы, а не лежит отрезанной плашкой. */
+.hero__media::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, transparent 52%, var(--night) 97%);
 }
 /* <picture> — инлайновая обёртка, через неё не наследуется процентная
    высота, и картинка вылезала за пределы экрана. Делаем её блоком.
@@ -424,7 +522,7 @@ body{
    и первый экран получает глубину. Трансформ живёт на picture,
    потому что на самой .hero__media висит анимация появления. */
 .hero__media picture{
-  display:block; width:100%; height:165%;
+  display:block; width:100%; height:158%;
   transform:translate3d(0, var(--py, 0px), 0);
   will-change:transform;
 }
@@ -457,6 +555,7 @@ body{
      сцена, а не две приставленные друг к другу колонки. */
   .hero__inner{
     min-height:100svh;
+    padding-top:calc(clamp(58px, 4.6vw, 72px) + clamp(2rem, 5vw, 4.5rem));
     padding-right:30vw;
     padding-bottom:clamp(1.5rem, 2.6vw, 2.75rem);
   }
@@ -478,8 +577,10 @@ body{
     top:calc(clamp(58px, 4.6vw, 72px) + 2rem);
     bottom:-30%;
     width:var(--media-w); max-width:900px;
-    margin:0; height:auto;
+    height:auto; min-height:0; max-height:none;
+    margin:0; overflow:visible;
   }
+  .hero__media::after{ display:none; }
   .hero__media picture{ height:100%; }
   .hero__img{ object-position:100% 0; }
 }
@@ -514,10 +615,10 @@ body{
 </style>
 
 <!-- Остальные стили не блокируют первую отрисовку -->
-<link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="css/styles.css"></noscript>
+<link rel="preload" href="css/styles.css?v=2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="css/styles.css?v=2"></noscript>
 
-<script src="js/script.js" defer></script>
+<script src="js/script.js?v=2" defer></script>
 
 <!-- ══ Schema.org ══ -->
 <script type="application/ld+json">
@@ -598,7 +699,24 @@ body{
     </nav>
 
     <a class="head-cta" href="tel:+79111558595">+7 911 155-85-95</a>
+
+    <!-- Бургер только для узких экранов. aria-expanded и aria-controls
+         обязательны: без них скринридер не сообщит, открыто меню или нет. -->
+    <button class="burger" id="burger" type="button"
+            aria-label="Меню" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span>
+    </button>
   </div>
+
+  <!-- Выпадающая панель навигации. hidden снимается скриптом. -->
+  <nav class="menu" id="menu" aria-label="Разделы страницы" hidden>
+    <a href="#about">О себе</a>
+    <a href="#areas">Направления</a>
+    <a href="#method">Как я работаю</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#contacts">Контакты</a>
+    <a class="menu__tel" href="tel:+79111558595">+7 911 155-85-95</a>
+  </nav>
 </header>
 
 <main id="main">
@@ -943,6 +1061,16 @@ body{
     <p class="site-foot__note">Информация на сайте носит справочный характер и не является публичной офертой.</p>
   </div>
 </footer>
+
+<!-- Закреплённая панель действий на телефонах.
+     Текст первого экрана уезжает под фото, поэтому кнопки связи
+     держим на виду постоянно — иначе до них надо доскроллить.
+     На десктопе панель скрыта: там CTA виден сразу. -->
+<div class="dock" aria-label="Быстрая связь">
+  <a class="dock__a dock__a--main" href="tel:+79111558595">Позвонить</a>
+  <a class="dock__a" href="https://wa.me/79111558595" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="dock__a" href="https://t.me/+79111558595" target="_blank" rel="noopener">Telegram</a>
+</div>
 
 </body>
 </html>
