@@ -20,27 +20,9 @@
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hasIO = 'IntersectionObserver' in window;
 
-  /* ── 1. Первый экран ────────────────────────────────────────────────
-     Ждём шрифты, иначе строки заголовка выезжают из-под маски дважды:
-     сначала запасным шрифтом, потом с другой метрикой. Таймаут страхует
-     от подвисшего CDN — анимация стартует в любом случае.            */
-  function revealHero() {
-    if (root.classList.contains('is-ready')) return;
-    // Принудительный пересчёт стилей: гарантирует, что стартовое
-    // состояние уже применено и переход проиграется, а не схлопнется.
-    // Сознательно без requestAnimationFrame — в фоновой вкладке rAF
-    // не вызывается, и первый экран остался бы невидимым.
-    void document.body.offsetHeight;
-    root.classList.add('is-ready');
-  }
-
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(revealHero);
-    setTimeout(revealHero, 900);
-  } else {
-    window.addEventListener('load', revealHero);
-    setTimeout(revealHero, 900);
-  }
+  /* Появление первого экрана делает CSS-анимация, скрипт в этом
+     больше не участвует: раньше экран ждал от него класс, и при
+     любом сбое оставался пустым. */
 
   /* ── 2. Шапка ───────────────────────────────────────────────────── */
   var head = document.getElementById('head');

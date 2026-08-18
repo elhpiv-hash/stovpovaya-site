@@ -62,7 +62,6 @@
      первый экран всё равно проявится, а не останется пустым. -->
 <script>
 document.documentElement.className = 'js';
-setTimeout(function(){ document.documentElement.classList.add('is-ready'); }, 2500);
 
 /* Страховка появления.
 
@@ -384,9 +383,7 @@ body{
 .dock{
   position:fixed; inset-inline:0; bottom:0; z-index:60;
   display:grid; grid-template-columns:repeat(2, 1fr);
-  background:rgba(21,21,23,.94);
-  -webkit-backdrop-filter:blur(14px);
-  backdrop-filter:blur(14px);
+  background:var(--night);
   border-top:1px solid var(--hair-night);
   padding-bottom:env(safe-area-inset-bottom, 0px);
 }
@@ -651,36 +648,32 @@ body{ padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px)); }
    Один раз при загрузке, без пролётов. Строки заголовка выезжают
    из-под маски, остальное — короткий сдвиг с прозрачностью.
    Стартовое состояние применяется только при активном JS.           */
-.js .hero__title .line > span,
-.js .hero__fade{
-  transition:transform 1.05s var(--ease) var(--d, 0ms),
-             opacity .85s var(--ease) var(--d, 0ms);
-}
-.js .hero__title .line > span{ transform:translateY(112%); }
-.js .hero__fade{ opacity:0; transform:translateY(12px); }
-.js .hero__media{
-  opacity:0; transform:scale(1.04);
-  transition:opacity 1.4s var(--ease) .1s, transform 1.8s var(--ease) .1s;
-}
+@keyframes heroLine{ from{ transform:translateY(112%); } to{ transform:none; } }
+@keyframes heroFade{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+@keyframes heroPhoto{ from{ opacity:0; transform:scale(1.04); } to{ opacity:1; transform:none; } }
 
-.is-ready .hero__title .line > span{ transform:none; }
-.is-ready .hero__fade{ opacity:1; transform:none; }
-.is-ready .hero__media{ opacity:1; transform:none; }
+/* Анимации, а не переходы по классу от скрипта. Раньше первый экран
+   ждал класс is-ready: не отработал JS — экран остался пустым.
+   fill-mode:both держит стартовый кадр до начала, поэтому мигания
+   контентом нет, а зависимости от скрипта больше тоже нет. */
+.hero__title .line > span{ animation:heroLine 1.05s var(--ease) var(--d, 0ms) both; }
+.hero__fade{ animation:heroFade .85s var(--ease) var(--d, 0ms) both; }
+.hero__media{ animation:heroPhoto 1.4s var(--ease) .1s both; }
 
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
-  .js .hero__title .line > span,
-  .js .hero__fade,
-  .js .hero__media{ opacity:1; transform:none; transition:none; }
+  .hero__title .line > span,
+  .hero__fade,
+  .hero__media{ animation:none; opacity:1; transform:none; }
   *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
 }
 </style>
 
 <!-- Остальные стили не блокируют первую отрисовку -->
-<link rel="preload" href="css/styles.css?v=10" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="css/styles.css?v=10"></noscript>
+<link rel="preload" href="css/styles.css?v=11" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="css/styles.css?v=11"></noscript>
 
-<script src="js/script.js?v=10" defer></script>
+<script src="js/script.js?v=11" defer></script>
 
 <!-- ══ Schema.org ══ -->
 <script type="application/ld+json">

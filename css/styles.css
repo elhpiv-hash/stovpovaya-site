@@ -456,22 +456,24 @@
    Сдвиг, прозрачность и лёгкая расфокусировка. Размытие снимается
    к концу движения — за счёт него элемент «наводится на резкость»,
    а не просто выезжает. Класс ставит IntersectionObserver, один раз. */
+/* Размытия здесь больше нет. filter:blur() висел на четырёх десятках
+   блоков сразу — на iPhone это столько же слоёв с размытием на GPU,
+   и Safari переставал отрисовывать страницу целиком: сайт открывался
+   пустым. Сдвига и прозрачности для мягкого появления достаточно. */
 .js [data-rv]{
   opacity:0;
   transform:translateY(16px);
-  filter:blur(5px);
   transition:opacity .75s var(--ease) var(--rd, 0ms),
-             transform .95s var(--ease) var(--rd, 0ms),
-             filter .75s var(--ease) var(--rd, 0ms);
+             transform .95s var(--ease) var(--rd, 0ms);
 }
-.js [data-rv].is-in{ opacity:1; transform:none; filter:none; }
+.js [data-rv].is-in{ opacity:1; transform:none; }
 
 /* Строки списка направлений выезжают чуть заметнее — их много,
    и одинаковое движение восемь раз подряд читалось бы вяло. */
 .js .areas__i[data-rv]{ transform:translateY(22px); }
 
 @media (prefers-reduced-motion:reduce){
-  .js [data-rv]{ opacity:1; transform:none; filter:none; transition:none; }
+  .js [data-rv]{ opacity:1; transform:none; transition:none; }
   .rules__i:nth-child(even){ transform:none; }
   .label::before{ transform:scaleX(1); transition:none; }
   .areas__i::after{ display:none; }
@@ -482,5 +484,5 @@
   .site-head, .hero__media, .hero__grain, .contacts__cta, .hero__cta{ display:none; }
   .hero{ min-height:auto; background:#fff; color:#000; }
   body{ background:#fff; }
-  .js [data-rv]{ opacity:1; transform:none; filter:none; }
+  .js [data-rv]{ opacity:1; transform:none; }
 }
