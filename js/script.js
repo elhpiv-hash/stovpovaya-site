@@ -41,7 +41,7 @@
 
   /* ── 3–5. Единый цикл прокрутки ─────────────────────────────────── */
   var media = document.getElementById('heroMedia');
-  var picture = media && media.querySelector('picture');
+  var picture = media && media.querySelector('img');   // трансформ живёт на самой картинке
 
   var lastY = window.pageYOffset;
   var ticking = false;
